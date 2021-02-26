@@ -13,17 +13,19 @@ const gameBoardModule = (function(){
 })();
 
 const Player = (name, mark) => {
-    const getName  = () => name;
-    const getMark = () => mark;
-//    const setName = () => this.name = string;
+    let playerName = name;
+    let playerMark = mark;
+    const getName  = () => playerName;
+    const getMark = () => playerMark;
     return {getName,
-            getMark}
-//            setName}
+            getMark,
+            set name(newName) {
+                playerName = newName;
+            }
+    }
 }
 let playerOne = Player('Player One', 'X')
 let playerTwo = Player('Player Two', 'O')
-//playerOne.setName = prompt('Please enter player one name');
-//playerTwo.setName = prompt('Please enter player two name'); 
 
 
 let displayControllerModule = (function() {
@@ -64,6 +66,8 @@ let displayControllerModule = (function() {
     }
     playGame: function playGame() {
         reset();
+        playerOne.name = prompt('Please enter player one name');
+        playerTwo.name = prompt('Please enter player two name'); 
         buttons.forEach((button) => {
             button.addEventListener('click', () => {
                 playMove(button.id)    
