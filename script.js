@@ -33,6 +33,7 @@ let displayControllerModule = (function() {
     const buttons = Array.from(document.getElementsByClassName('square'));
     let player = playerOne
     playMove: function playMove(buttonID) {   
+        player = playerOne;
         let gameArray = gameBoardModule.getGameArray()         
         if (gameArray[buttonID -1] === '') {
             gameBoardModule.setGameArray([buttonID -1],player.getMark());
@@ -51,7 +52,7 @@ let displayControllerModule = (function() {
             if ((gameArray.includes('')) === false) {
                 endGame('tie')
             }
-            player = switchPlayer();
+            computerPlay()
         }
     }  
      
@@ -68,6 +69,7 @@ let displayControllerModule = (function() {
         reset();
         playerOne.name = prompt('Please enter player one name');
         playerTwo.name = prompt('Please enter player two name'); 
+        player=playerOne;
         buttons.forEach((button) => {
             button.addEventListener('click', () => {
                 playMove(button.id)    
@@ -85,11 +87,46 @@ let displayControllerModule = (function() {
         }
     }
     reset: function reset() {    
+        player = playerOne;
         for (let i = 0; i < 9; i++) {
             gameBoardModule.setGameArray(i,'');
         }
         render();
     }
+    computerPlay: function computerPlay() {
+        player = playerTwo
+        let gameArray = gameBoardModule.getGameArray()         
+        let compChoice = Math.floor(Math.random()*Math.floor(8))
+        let keepGoing = true;
+        if ((gameArray.includes('')) === false) {
+            endGame('tie')
+        }
+        while (gameArray[compChoice] !== '') {
+            compChoice = Math.floor(Math.random()*Math.floor(8)); 
+        }
+        gameBoardModule.setGameArray([compChoice],player.getMark());
+        render();        
+        gameArray = gameBoardModule.getGameArray() 
+        if ((gameArray[0] !== '' && (gameArray[0] === gameArray[1] && gameArray[1] === gameArray[2])) ||
+            (gameArray[3] !== '' && (gameArray[3] === gameArray[4] && gameArray[4] === gameArray[5])) ||
+            (gameArray[6] !== '' && (gameArray[6] === gameArray[7] && gameArray[7] === gameArray[8])) ||
+            (gameArray[0] !== '' && (gameArray[0] === gameArray[3] && gameArray[3] === gameArray[6])) ||
+            (gameArray[1] !== '' && (gameArray[1] === gameArray[4] && gameArray[4] === gameArray[7])) ||
+            (gameArray[2] !== '' && (gameArray[2] === gameArray[5] && gameArray[5] === gameArray[8])) ||
+            (gameArray[0] !== '' && (gameArray[0] === gameArray[4] && gameArray[4] === gameArray[8])) ||
+            (gameArray[2] !== '' && (gameArray[2] === gameArray[4] && gameArray[4] === gameArray[6])) ) {
+                endGame(player);
+        } 
+        if ((gameArray.includes('')) === false) {
+            endGame('tie')
+        }
+        player = switchPlayer();               
+        
+    }
+
+
+
+
     return {playGame,
             reset
             }
