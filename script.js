@@ -6,54 +6,94 @@ const gameBoardModule = (function(){
     setGameArray: function setGameArray(i,mark){
         gameArray[i] = mark;
         return gameArray;
-    }
-    let squares = []
-    render: function render() {
-        gameArray.forEach(function (element,i) {
-            squares[i] = document.getElementById(i+1);
-            squares[i].textContent = element;
-        });
-    }
-    switchPlayer: function switchPlayer(player) {
-        player = (player === playerOne) ? playerTwo : playerOne;
-        return playMove(player)
-    }
-    const buttons = Array.from(document.getElementsByClassName('square'));
-    playMove: function playMove(player) {
-            buttons.forEach((button) => {
-                button.addEventListener('click', () => {
-                    if (gameArray[button.id -1] !== '') {
-                        return 'error'
-                    } else {
-                        console.log(player.getName())
-                        setGameArray([button.id -1],player.getMark())
-                        render(); 
-                        switchPlayer(player);
-                        console.log('done1')  
-                        return 'done'; 
-                    }
-                })   
-            }) 
-    } 
-    
+    }    
     return {getGameArray, 
             setGameArray, 
-            render,
-            playMove,
-            switchPlayer}
-})();
-
-
-let displayControllerModule = (function() {
-            
-    //on completion of move gameBoardModule.render()
+            }
 })();
 
 const Player = (name, mark) => {
     const getName  = () => name;
     const getMark = () => mark;
+//    const setName = () => this.name = string;
     return {getName,
             getMark}
+//            setName}
 }
-const playerOne = Player('Player One', 'X')
-const playerTwo = Player('Player Two', 'O')
+let playerOne = Player('Player One', 'X')
+let playerTwo = Player('Player Two', 'O')
+//playerOne.setName = prompt('Please enter player one name');
+//playerTwo.setName = prompt('Please enter player two name'); 
+
+
+let displayControllerModule = (function() {
+    //array of the html button elements
+    const buttons = Array.from(document.getElementsByClassName('square'));
+    let player = playerOne
+    playMove: function playMove(buttonID) {   
+        let gameArray = gameBoardModule.getGameArray()         
+        if (gameArray[buttonID -1] === '') {
+            gameBoardModule.setGameArray([buttonID -1],player.getMark());
+            render();        
+            gameArray = gameBoardModule.getGameArray() 
+            if ((gameArray[0] !== '' && (gameArray[0] === gameArray[1] && gameArray[1] === gameArray[2])) ||
+                (gameArray[3] !== '' && (gameArray[3] === gameArray[4] && gameArray[4] === gameArray[5])) ||
+                (gameArray[6] !== '' && (gameArray[6] === gameArray[7] && gameArray[7] === gameArray[8])) ||
+                (gameArray[0] !== '' && (gameArray[0] === gameArray[3] && gameArray[3] === gameArray[6])) ||
+                (gameArray[1] !== '' && (gameArray[1] === gameArray[4] && gameArray[4] === gameArray[7])) ||
+                (gameArray[2] !== '' && (gameArray[2] === gameArray[5] && gameArray[5] === gameArray[8])) ||
+                (gameArray[0] !== '' && (gameArray[0] === gameArray[4] && gameArray[4] === gameArray[8])) ||
+                (gameArray[2] !== '' && (gameArray[2] === gameArray[4] && gameArray[4] === gameArray[6])) ) {
+                    endGame(player);
+            } 
+            if ((gameArray.includes('')) === false) {
+                endGame('tie')
+            }
+            player = switchPlayer();
+        }
+    }  
+     
+    switchPlayer: function switchPlayer() {
+        return (player === playerOne) ? playerTwo : playerOne;
+
+    }
+    render: function render() {
+        gameBoardModule.getGameArray().forEach(function (element,i) {
+            buttons[i].textContent = element;
+        });
+    }
+    playGame: function playGame() {
+        reset();
+        buttons.forEach((button) => {
+            button.addEventListener('click', () => {
+                playMove(button.id)    
+            })       
+        }) 
+    }
+    endGame: function endGame(player) {
+        if (player === 'tie') {
+            alert('Tie!!');
+            reset();
+        } else {
+            let winner = player.getName();
+            alert(winner + ' is the winner!');
+            reset();
+        }
+    }
+    reset: function reset() {    
+        for (let i = 0; i < 9; i++) {
+            gameBoardModule.setGameArray(i,'');
+        }
+        render();
+    }
+    return {playGame,
+            reset
+            }
+})();
+
+let startButton = document.getElementById('start');
+startButton.addEventListener('click', () => {
+    displayControllerModule.reset();
+    displayControllerModule.playGame();
+});
+
