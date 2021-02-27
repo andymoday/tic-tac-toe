@@ -32,11 +32,13 @@ let displayControllerModule = (function() {
     //array of the html button elements
     const buttons = Array.from(document.getElementsByClassName('square'));
     let player = playerOne
+    let lastMove = ''
     playMove: function playMove(buttonID) {   
         player = playerOne;
         let gameArray = gameBoardModule.getGameArray()         
         if (gameArray[buttonID -1] === '') {
             gameBoardModule.setGameArray([buttonID -1],player.getMark());
+            lastMove = buttonID -1;
             render();        
             gameArray = gameBoardModule.getGameArray() 
             if ((gameArray[0] !== '' && (gameArray[0] === gameArray[1] && gameArray[1] === gameArray[2])) ||
@@ -48,11 +50,11 @@ let displayControllerModule = (function() {
                 (gameArray[0] !== '' && (gameArray[0] === gameArray[4] && gameArray[4] === gameArray[8])) ||
                 (gameArray[2] !== '' && (gameArray[2] === gameArray[4] && gameArray[4] === gameArray[6])) ) {
                     endGame(player);
-            } 
-            if ((gameArray.includes('')) === false) {
+            } else if ((gameArray.includes('')) === false) {
                 endGame('tie')
-            }
+            } else {
             computerPlay()
+            }
         }
     }  
      
@@ -96,14 +98,15 @@ let displayControllerModule = (function() {
     computerPlay: function computerPlay() {
         player = playerTwo
         let gameArray = gameBoardModule.getGameArray()         
-        let compChoice = Math.floor(Math.random()*Math.floor(8))
+        let compChoice;
         let keepGoing = true;
         if ((gameArray.includes('')) === false) {
             endGame('tie')
         }
-        while (gameArray[compChoice] !== '') {
-            compChoice = Math.floor(Math.random()*Math.floor(8)); 
-        }
+        //while (gameArray[compChoice] !== '') {
+        //    compChoice = Math.floor(Math.random()*Math.floor(8)); 
+        //}
+        compChoice = compChoice(gameArray);
         gameBoardModule.setGameArray([compChoice],player.getMark());
         render();        
         gameArray = gameBoardModule.getGameArray() 
@@ -123,7 +126,32 @@ let displayControllerModule = (function() {
         player = switchPlayer();               
         
     }
-
+    compChoice: function compChoice(currGamArr){
+        let score;
+        let bestScore = -2;
+        let nextMove;
+        for (let i = 0; i < 9; i++) {
+            if (curGamArr[i] === '') {
+                let testArr = currGamArr;
+                testArr[i] = 'O';
+                if (winningBoards.includes(testArr)){
+                    score = 1;
+                } else if (losingBoards.includes(testArr)) {
+                    score = -1;
+                } else {
+                    score = 0;
+                }
+                if (score > bestScore) {
+                    bestScore = score;
+                    nextMove = i;
+                }
+                if (score <1) {
+                    compChoice(testArr);
+                }
+            }
+        }
+        return nextMove;
+    }
 
 
 
