@@ -18,7 +18,14 @@
             <button class='square' id='8'></button>
             <button class='square' id='9'></button>
         </container>
-        <button id='start'>START/RESET</button>
+        <button id='start' onclick="openForm()">START/RESET</button> 
+        <div class = 'choose-mode-popup' id='myModeForm'>
+            <form id="modeForm" class='mode-form-container'>
+                <button type="button" id="1P" class="mode" onclick="closeForm()">1P</button>
+                <button type="button" id="2P" class="mode" onclick="closeForm()">2P</button>
+                <button type="button" class="btn cancel" onclick="closeForm()">CLOSE</button>
+            </form>  
+          </div>
     </body>
     <script src="script.js">  
     </script>

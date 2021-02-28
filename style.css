@@ -71,3 +71,44 @@ body {
     border:solid 1px black;
     text-align: center;;
 }
+
+
+
+
+
+
+/*=====================================FORM=====================================================*/
+.choose-mode-popup {
+    border: 2px solid #000000;
+    display: none; /*keeps it hidden until add button is clicked*/
+    margin:auto auto;
+    position: fixed;
+    top: 25%;
+  }
+  
+  .mode-form-container {
+    align-items:center;
+    background-color: #004020e7;
+    color: gold;
+    display: grid;
+    font-family: 'Bad Script';
+    font-size: 20px;
+    grid-template-rows: 1fr .8fr 1fr .8fr 1fr .8fr 2fr 1.5fr 1.5fr ;
+    height: 420px;
+    line-height: 25px;
+    padding: 10px;
+    text-align: center;
+    width: 300px;
+  }
+  
+  .btn {
+    background-color: gold;
+    border: solid black 1px;
+    border-radius: 2%;
+    color: #004020e7;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: bold;
+    height:80%;
+  }
