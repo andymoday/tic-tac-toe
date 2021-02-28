@@ -6,7 +6,7 @@ const gameBoardModule = (function(){
     setGameArray: function setGameArray(i,mark){
         gameArray[i] = mark;
         return gameArray;
-    }    
+    }  
     return {getGameArray, 
             setGameArray, 
             }
@@ -41,17 +41,8 @@ let displayControllerModule = (function() {
             lastMove = buttonID -1;
             render();        
             gameArray = gameBoardModule.getGameArray() 
-            if ((gameArray[0] !== '' && (gameArray[0] === gameArray[1] && gameArray[1] === gameArray[2])) ||
-                (gameArray[3] !== '' && (gameArray[3] === gameArray[4] && gameArray[4] === gameArray[5])) ||
-                (gameArray[6] !== '' && (gameArray[6] === gameArray[7] && gameArray[7] === gameArray[8])) ||
-                (gameArray[0] !== '' && (gameArray[0] === gameArray[3] && gameArray[3] === gameArray[6])) ||
-                (gameArray[1] !== '' && (gameArray[1] === gameArray[4] && gameArray[4] === gameArray[7])) ||
-                (gameArray[2] !== '' && (gameArray[2] === gameArray[5] && gameArray[5] === gameArray[8])) ||
-                (gameArray[0] !== '' && (gameArray[0] === gameArray[4] && gameArray[4] === gameArray[8])) ||
-                (gameArray[2] !== '' && (gameArray[2] === gameArray[4] && gameArray[4] === gameArray[6])) ) {
-                    endGame(player);
-            } else if ((gameArray.includes('')) === false) {
-                endGame('tie')
+            if (getResult(gameArray) !== 'incomplete'){
+                endGame(getResult(gameArray));
             } else {
             computerPlay()
             }
@@ -78,12 +69,17 @@ let displayControllerModule = (function() {
             })       
         }) 
     }
-    endGame: function endGame(player) {
-        if (player === 'tie') {
+    endGame: function endGame(result) {
+        if (result === 'tie') {
             alert('Tie!!');
             reset();
         } else {
-            let winner = player.getName();
+            let winner = ''
+            if (result === 'X win') {
+                winner = playerOne.getName();
+            } else {
+                winner = playerTwo.getName();
+            }
             alert(winner + ' is the winner!');
             reset();
         }
@@ -99,58 +95,77 @@ let displayControllerModule = (function() {
         player = playerTwo
         let gameArray = gameBoardModule.getGameArray()         
         let compChoice;
-        let keepGoing = true;
         if ((gameArray.includes('')) === false) {
             endGame('tie')
         }
         //while (gameArray[compChoice] !== '') {
         //    compChoice = Math.floor(Math.random()*Math.floor(8)); 
         //}
-        compChoice = compChoice(gameArray);
+        compChoice = computeChoice(gameArray);
         gameBoardModule.setGameArray([compChoice],player.getMark());
         render();        
         gameArray = gameBoardModule.getGameArray() 
-        if ((gameArray[0] !== '' && (gameArray[0] === gameArray[1] && gameArray[1] === gameArray[2])) ||
-            (gameArray[3] !== '' && (gameArray[3] === gameArray[4] && gameArray[4] === gameArray[5])) ||
-            (gameArray[6] !== '' && (gameArray[6] === gameArray[7] && gameArray[7] === gameArray[8])) ||
-            (gameArray[0] !== '' && (gameArray[0] === gameArray[3] && gameArray[3] === gameArray[6])) ||
-            (gameArray[1] !== '' && (gameArray[1] === gameArray[4] && gameArray[4] === gameArray[7])) ||
-            (gameArray[2] !== '' && (gameArray[2] === gameArray[5] && gameArray[5] === gameArray[8])) ||
-            (gameArray[0] !== '' && (gameArray[0] === gameArray[4] && gameArray[4] === gameArray[8])) ||
-            (gameArray[2] !== '' && (gameArray[2] === gameArray[4] && gameArray[4] === gameArray[6])) ) {
-                endGame(player);
-        } 
-        if ((gameArray.includes('')) === false) {
-            endGame('tie')
+        if (getResult(gameArray) !== 'incomplete'){
+            endGame(getResult(gameArray));
         }
         player = switchPlayer();               
         
     }
-    compChoice: function compChoice(currGamArr){
+    computeChoice: function computeChoice(array){
+        let curGamArr = array.slice();
         let score;
-        let bestScore = -2;
-        let nextMove;
-        for (let i = 0; i < 9; i++) {
-            if (curGamArr[i] === '') {
-                let testArr = currGamArr;
-                testArr[i] = 'O';
-                if (winningBoards.includes(testArr)){
-                    score = 1;
-                } else if (losingBoards.includes(testArr)) {
-                    score = -1;
+        let marker = 'O';
+        function move(marker,array) {
+            let testArr = array.slice();
+            for (let i = 0; i < 9; i++) {
+                if (array[i] === '') {
+                    testArr[i] = marker;
+                    if (getResult(testArr)==='O win'){
+                        score = (marker === 'O')? 1: -1;
+                    } else if (getResult(testArr)==='X win') {
+                        score = (marker === 'O')? -1: 1;
+                    } else {
+                        score = 0;
+                    }
+                    if (score = 1) {
+                        return i
+                    }
+                    if (score <1) {
+                        return move((marker === 'X')? marker = 'O':marker ='X',testArr);
+                    }
                 } else {
-                    score = 0;
-                }
-                if (score > bestScore) {
-                    bestScore = score;
-                    nextMove = i;
-                }
-                if (score <1) {
-                    compChoice(testArr);
+                    score = -1
                 }
             }
         }
-        return nextMove;
+        return move(marker,curGamArr)
+    }
+    getResult: function getResult(gameArray) {
+        if ((gameArray.includes('')) === false) {
+            return 'tie';
+        }
+        if ((gameArray[0] !== '' && gameArray[0] === 'X' && (gameArray[0] === gameArray[1] && gameArray[1] === gameArray[2])) ||
+            (gameArray[3] !== '' && gameArray[3] === 'X' && (gameArray[3] === gameArray[4] && gameArray[4] === gameArray[5])) ||
+            (gameArray[6] !== '' && gameArray[6] === 'X' && (gameArray[6] === gameArray[7] && gameArray[7] === gameArray[8])) ||
+            (gameArray[0] !== '' && gameArray[0] === 'X' && (gameArray[0] === gameArray[3] && gameArray[3] === gameArray[6])) ||
+            (gameArray[1] !== '' && gameArray[1] === 'X' && (gameArray[1] === gameArray[4] && gameArray[4] === gameArray[7])) ||
+            (gameArray[2] !== '' && gameArray[2] === 'X' && (gameArray[2] === gameArray[5] && gameArray[5] === gameArray[8])) ||
+            (gameArray[0] !== '' && gameArray[0] === 'X' && (gameArray[0] === gameArray[4] && gameArray[4] === gameArray[8])) ||
+            (gameArray[2] !== '' && gameArray[2] === 'X' && (gameArray[2] === gameArray[4] && gameArray[4] === gameArray[6])) ) {
+            return 'X win';
+        }
+        else if ((gameArray[0] !== '' && gameArray[0] === 'O' && (gameArray[0] === gameArray[1] && gameArray[1] === gameArray[2])) ||
+            (gameArray[3] !== '' && gameArray[3] === 'O' && (gameArray[3] === gameArray[4] && gameArray[4] === gameArray[5])) ||
+            (gameArray[6] !== '' && gameArray[6] === 'O' && (gameArray[6] === gameArray[7] && gameArray[7] === gameArray[8])) ||
+            (gameArray[0] !== '' && gameArray[0] === 'O' && (gameArray[0] === gameArray[3] && gameArray[3] === gameArray[6])) ||
+            (gameArray[1] !== '' && gameArray[1] === 'O' && (gameArray[1] === gameArray[4] && gameArray[4] === gameArray[7])) ||
+            (gameArray[2] !== '' && gameArray[2] === 'O' && (gameArray[2] === gameArray[5] && gameArray[5] === gameArray[8])) ||
+            (gameArray[0] !== '' && gameArray[0] === 'O' && (gameArray[0] === gameArray[4] && gameArray[4] === gameArray[8])) ||
+            (gameArray[2] !== '' && gameArray[2] === 'O' && (gameArray[2] === gameArray[4] && gameArray[4] === gameArray[6])) ) {
+            return 'O win';
+        } else {
+            return 'incomplete';
+        }
     }
 
 
