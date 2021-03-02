@@ -48,30 +48,31 @@ table {
 }
 /*===================================END OF RESET=============================================*/
 header {
-  position: absolute;
-  display: block;
   margin: 0 auto;
   text-align: center;
   font-size: 50px;
-  top: 70px;
-  left: 130px;
+  grid-area: cabove;
 }
 
 body {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 3fr;;
-    grid-template-areas: "l c r" "lbelow cbelow rbelow";
+    grid-template-columns: 1fr 0.2fr 0.2fr 1fr;
+    grid-template-rows: 0.6fr 0.1fr 1.8fr 0.3fr;;
+    grid-template-areas: "labove cabove cabove rabove" 
+                         "l c c r" 
+                         "lbelow cbelow cbelow rbelow"
+                         "lbottom lcbottom rcbottom rbottom";
     justify-items: center;
     align-items: center;
     font-family: 'Open Sans Condensed', sans-serif;
 }
 .mode {
-    height: 40px;
-    width: 140px;
+  margin: 10px 0 0 0;
+    height: 30px;
+    width: 90px;
     color: rgba(0, 0, 0, 0.781);
     background-color: rgba(100, 148, 237, 0.747);
-    font-size: 25px;
+    font-size: 20px;
     border-radius: 5px;
     border:solid 1px black;
 }
@@ -81,20 +82,21 @@ body {
     grid-area: c;
 }
 #start-container p {
-  margin: 10px auto;
+  margin: 0 auto;
   text-align: center;
-  font-size: 25px;
+  font-size: 15px;
 }
 
 #gameboard {
     display: grid;
-    width: 400px;
-    height: 400px;
+    width: 250px;
+    height: 250px;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
     justify-content: center;
     grid-area: cbelow;
     background:khaki;
+    margin-top: 20px;
 }
 
 .square {
@@ -109,26 +111,26 @@ body {
 }
 
 .icon {
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     border:solid 1px black;
-    font-size: 50px;
+    font-size: 55px;
     text-align: center;
     color: rgba(0, 0, 0, 0.781);
     background-color: rgba(100, 148, 237, 0.747);
     border-radius: 5px;
-    line-height: 75px;
+    line-height: 55px;
     margin: 20px auto;
 }
 #player-one-panel {
   display:grid;
-  grid-area: lbelow;
-  justify-content: center;;
+  grid-area: lcbottom;
+  justify-content: right;
 }
 #player-two-panel {
   display:grid; 
-  grid-area: rbelow;
-  justify-content: center;
+  grid-area: rcbottom;
+  justify-content: left;
 }
 
 .player-name {
@@ -162,7 +164,8 @@ body {
     display: none; /*keeps it hidden until add button is clicked*/
     margin:auto auto;
     position: fixed;
-    bottom: 250px;
+    top: 100px;
+    width: 60%;
   }
   
   .winner-form-container {
@@ -173,9 +176,9 @@ body {
     font-size: 20px;
     grid-template-rows: 1fr 1fr;
     line-height: 25px;
-    padding: 10px;
+    padding: 10%;
     text-align: center;
-    height: 100px;
-    width: 300px;
+    height: 200px;
+    width: 80%;
   }
 
