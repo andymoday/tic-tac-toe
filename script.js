@@ -1,3 +1,4 @@
+//hosts the gameboard information at all times
 const gameBoardModule = (function(){
     let gameArray = ['','','','','','','','',''];
     getGameArray: function getGameArray(){
@@ -11,7 +12,7 @@ const gameBoardModule = (function(){
             setGameArray, 
             }
 })();
-
+//Factory function for players, with getter and setter
 const Player = (name, mark) => {
     let playerName = name;
     let playerMark = mark;
@@ -24,19 +25,22 @@ const Player = (name, mark) => {
             }
     }
 }
+//all other game events controlled here
 
 let displayControllerModule = (function() {
     //array of the html button elements
     const buttons = Array.from(document.getElementsByClassName('square'));
+    let winnerForm = document.getElementById("myWinnerForm");
+    let winnerMSG = document.getElementById("winner-message");
     let playerOne = Player('Player One', 'X')
     let playerTwo = Player('Player Two', 'O')
     let player = playerOne;
     let mode;
+    //fired by mode buttons. Sets one player or two player, prompts for player names, starts game
     setMode: function setMode(button) {
+        //clears previous gameboard if halfway through when mode button is clicked
         reset();
         mode = button;
-        //let nameSelectForm = document.getElementById("myNameForm")
-        //nameSelectForm.style.display = 'block'
         let P1 = prompt('Please enter player one name');
         playerOne.name = P1
         document.getElementById('player-one-name').textContent = P1
@@ -50,26 +54,8 @@ let displayControllerModule = (function() {
         }
         playGame();
     } 
-    //setPlayer: function setPlayer() {
-    //    let P1 = document.getElementById('player-one').value;
-    //    let P2 = document.getElementById('player-one').value;
-    //    playerOne.name = P1
-    //    if (mode === '1P') {
-    //        playerTwo.name = 'Computer'
-    //    } else {
-    //        playerTwo.name = P2
-    //    }           
-    //    document.getElementById('player-one').value = ''
-    //    document.getElementById('player-two').value = ''  
-    //    document.getElementById('player-one-name').value = P1
-    //    document.getElementById('player-two-name').value = P2
-    //    console.log(document.getElementById('player-one-name').value,
-    //                document.getElementById('player-two-name').value,
-    //                playerOne.name,
-    //                playerTwo.name )        
-    //    return false;//It's important to return false; to prevent default behaviour at the end of your submit handler, as otherwise the form will post and reload the page.
-    //}
     playGame: function playGame() { 
+        //catch for any event listeners that haven't switched off
         buttons.forEach(button => {
             button.removeEventListener('click', mouseEventHandler)
           })  
@@ -77,59 +63,35 @@ let displayControllerModule = (function() {
             button.addEventListener('click', mouseEventHandler)
         })
     }    
-    mouseEventHandler: function mouseEventHandler({target})  { // Step 2
-        if (target.className === 'square') { // Step 3
-            console.log(target.id)
-            if (mode === '1P') {
-                player = playerOne;
-            } else {
-                player = player
-            } //comment out for multiplayer
-            let gameArray = gameBoardModule.getGameArray()         
+    mouseEventHandler: function mouseEventHandler({target})  { 
+        //curent state of the board
+        let gameArray = gameBoardModule.getGameArray()
+        if (target.className === 'square') {        
             if (gameArray[target.id -1] === '') {
                 gameBoardModule.setGameArray([target.id -1],player.getMark());
-                //target.stopImmediatePropagation();
-                render();        
+                render();    
+                //fetch updated game board    
                 gameArray = gameBoardModule.getGameArray() 
-                console.log(gameArray[0],gameArray[1],gameArray[2],
-                    gameArray[3], gameArray[4],gameArray[5],gameArray[6],gameArray[7],gameArray[8],
-                    getResult(gameArray))
                 let result = getResult(gameArray)
+                //checks for winning combinations
                 if (result !== 'incomplete'){
-                    //stopImmediatePropagation();
-                    buttons.forEach(button => {
-                        button.removeEventListener('click', mouseEventHandler)
-                      })
                     endGame(result);
                     return;
                 } else {
+                    //if no winning combos, instigate next turn
                     if (mode === '1P') {
-                        //target.stopImmediatePropagation()
-                        buttons.forEach(button => {
-                            button.removeEventListener('click', mouseEventHandler)
-                          })
                         computerPlay()
                     } else {
                         player = switchPlayer();
-                        //target.stopImmediatePropagation()
-                        buttons.forEach(button => {
-                            button.removeEventListener('click', mouseEventHandler)
-                          })
                         playGame()
-
                     }
                 }
+                //if player clicks on a square that has already been taken, fire a repeat move
             } else {
-                //target.stopImmediatePropagation()
-                buttons.forEach(button => {
-                    button.removeEventListener('click', mouseEventHandler)
-                  })
                 playGame()}
         }
     }    
     endGame: function endGame(result) {
-        let winnerForm = document.getElementById("myWinnerForm");
-        let winnerMSG = document.getElementById("winner-message");
         winnerForm.style.display = "block";
         if (result === 'tie') {
             winnerMSG.textContent =  'Tie!'
@@ -140,15 +102,15 @@ let displayControllerModule = (function() {
             } else {
                 winner = playerTwo.getName();
             }
-            winnerMSG.textContent =  winner + ' is the winner!'
-            
+            winnerMSG.textContent =  winner + ' is the winner!'     
         }
         return
     }
+    //fired to switch the player name between turns
     switchPlayer: function switchPlayer() {
         return (player === playerOne) ? playerTwo : playerOne;
-
     }
+    //fired on close form and on mode button click
     reset: function reset() {   
         for (let i = 0; i < 9; i++) {
             gameBoardModule.setGameArray(i,'');
@@ -161,91 +123,83 @@ let displayControllerModule = (function() {
             buttons[i].textContent = element;
         });
     } 
+    //computer version of mouseEventHandler
     computerPlay: function computerPlay() {
         player = playerTwo
         let gameArray = gameBoardModule.getGameArray()         
         let compChoice;
-        //if ((gameArray.includes('')) === false) {
-        //    endGame('tie')
-        //}
-        //while (gameArray[compChoice] !== '') {
-        //    compChoice = Math.floor(Math.random()*Math.floor(8)); 
-        //}
         compChoice = computeChoice(gameArray);
         gameBoardModule.setGameArray([compChoice],player.getMark());
         render();        
         gameArray = gameBoardModule.getGameArray() 
         if (getResult(gameArray) !== 'incomplete'){
-            buttons.forEach(button => {
-                button.removeEventListener('click', mouseEventHandler)
-              })
             endGame(getResult(gameArray));
             return
         }
         player = switchPlayer();
-        buttons.forEach(button => {
-            button.removeEventListener('click', mouseEventHandler)
-          })  
-        playGame();               
-        
+        playGame();                  
     }
+    //selects which move the computer will play
     computeChoice: function computeChoice(array){
+        //avoid mutations
         let curGamArr = array.slice();
+        //computers play token
         let marker = 'O';
         function move(marker,arr) {
+            //each function call to move() is for a round of the play, switching opponents recursively
             let availableMoves = 0;
             let winlist = [];
             let loselist = [];
             let unsolved = [];
             const countOccurrences = (array, val) => array.reduce((a, v) => (v === val ? a + 1 : a), 0);
             if (countOccurrences(arr,'') === 1) {
-                //console.log('no moves left')
+                //no moves left, so return the only move available
                 return arr.indexOf('');
             }
-            //for current board
+            //for current board and this round
             //try each move in turn
             //INTO LOOP
             for (let i = 0; i < 9; i++) {
+                //avoid mutations
                 let testArray = arr.slice();
                 //if a position is unavailable, ignore
                 if (testArray[i] === '') {
+                    //catalogue number of available moves 
                     availableMoves +=1;
+                    //add computers play marker to the array in position i
                     testArray[i] = marker;
-            //if a move wins, add to a list and return random integer from list of wins
-                //console.log(testArray)    
+                //if a move wins, add to a list and return random integer from list of wins  
                 if (getResult(testArray) === 'O win') {
-                        //console.log('AA')
                         (marker === 'O')? winlist.push(i):loselist.push(i)
+                    //if a move loses discard unless they all lose, then pick random integer from list of losing options
                     } else if (getResult(testArray) === 'X win') {
-                        //console.log('BB')
                         (marker === 'O')? loselist.push(i):winlist.push(i);
+                    //if a move is undetermined, recall the function on the board containing that move, and play the 
                     } else {
-                        //console.log('CC')
                         unsolved.push(i);
                     }
+                    //each layer furthe into the game, the opponent switches, so we switch the logic of wins/losses
+                    //when only one place to go, report that position back up 
                 }
-            //if a move loses discard unless they all lose, then pick random integer from list of losing options
-            //if a move is undetermined, recall the function on the board containing that move, and play the 
-            //opponents moves one at a time. switch the logic of wins/losses
-            //when only one place to go, report that position back up 
             }
-            //console.log(winlist, loselist,loselist.length)
             //OUT OF LOOP
+            //if there is a winning move, choose it randomly and pass it up
             if (winlist.length > 0) {
-                //console.log('gettinghere1')
                 return winlist[Math.floor(Math.random()*Math.floor(winlist.length))];
             }
+            //else look for a losing move
             if (loselist.length === availableMoves) {
-                //console.log('gettinghere2')
                 return loselist[Math.floor(Math.random()*Math.floor(loselist.length))];
             }
+            //otherwise look recursively at the unsolved moves
             else {
-                //console.log('gettinghere3')
                 let otherList = []
                 for (let i = 0; i< unsolved.length; i++) {
-                    tArr = arr.slice();
+                    //avoid mutations
+                    let tArr = arr.slice();
+                    //this is putting on of the unsolved squares as the computer's play this round
                     tArr[unsolved[i]] = marker;
-                    //console.log(unsolved[i],tArr)
+                    //making list of possible moves by recursively testing on each possible array(changing player marker for recursion)
                     otherList.push(move((marker === 'O')? 'X':'O',tArr))
                 }
                 return otherList[Math.floor(Math.random()*Math.floor(otherList.length))];
@@ -254,6 +208,7 @@ let displayControllerModule = (function() {
     
         return move(marker,curGamArr)//needs to be integer
     }
+    //checks for win/lose combinations
     getResult: function getResult(gameArray) {
         if ((gameArray[0] !== '' && gameArray[0] === 'X' && (gameArray[0] === gameArray[1] && gameArray[1] === gameArray[2])) ||
             (gameArray[3] !== '' && gameArray[3] === 'X' && (gameArray[3] === gameArray[4] && gameArray[4] === gameArray[5])) ||
@@ -281,14 +236,10 @@ let displayControllerModule = (function() {
         }
     }
     closeWinnerForm: function closeWinnerForm() {
-        document.getElementById("myWinnerForm").style.display = "none";
+        winnerForm.style.display = "none";
         playGame();
         reset();
         } 
-    //closePlayerForm: function closePlayerForm() {
-    //    document.getElementById("myNameForm").style.display = "none";
-    //    } 
-
 
     return {setMode,
             closeWinnerForm

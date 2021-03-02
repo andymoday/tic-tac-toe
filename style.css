@@ -61,45 +61,16 @@ body {
   justify-items: center; 
 }
 
-@media (min-width: 400px) {
-  body {
-    align-items: center;
-    display: grid;
-    font-family: 'Open Sans Condensed', sans-serif;
-    grid-template-columns: 1fr 0.2fr 0.2fr 1fr;
-    grid-template-rows: 0.6fr 0.1fr 1.8fr 0.3fr;;
-    grid-template-areas: "labove cabove cabove rabove" 
-                          "l c c r" 
-                          "lbelow cbelow cbelow rbelow"
-                          "lbottom lcbottom rcbottom rbottom";
-    justify-items: center; 
-  }  
-}
-
 header {
   font-size: 50px;
   grid-area: hd;
   margin: 0 auto;
   text-align: center;
 }
-@media (min-width: 400px) {
-  header {
-    font-size: 50px;
-    grid-area: cabove;
-    margin: 0 auto;
-    text-align: center;
-  }
-}
 /*==========start-container=================*/
 #start-container {
     display:block;
     grid-area: mode;
-}
-@media (min-width: 400px) {
-  #start-container {
-    display:block;
-    grid-area: c;
-  }
 }
 
 #start-container p {
@@ -129,19 +100,6 @@ header {
   margin-top: 20px;
   width: 250px;
 }
-@media (min-width: 400px) {
-  #gameboard {
-    background:khaki;
-    display: grid;
-    grid-area: cbelow;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    height: 250px;
-    justify-content: center;
-    margin-top: 20px;
-    width: 250px;
-  }
-}
 
 .square {
   background-color: rgba(100, 148, 237, 0.747);
@@ -166,22 +124,6 @@ header {
   justify-content: left;
 }
 
-@media (min-width: 400px) {
-  #player-one-panel {
-    display:grid;
-    grid-area: lcbottom;
-    justify-content: right;
-  }
-}
-
-@media (min-width: 400px) {
-  #player-two-panel {
-    display:grid; 
-    grid-area: rcbottom;
-    justify-content: left;
-  }
-}
-
 .icon {  
   background-color: rgba(100, 148, 237, 0.747);
   border:solid 1px black;
@@ -202,29 +144,29 @@ header {
 }
 /*==========winner-popup=================*/
 .winner-popup {
-  border: 2px solid #000000;
-  border-radius: 5%;
   display: none; /*keeps it hidden until add button is clicked*/
   margin:auto auto;
   position: fixed;
-  top: 25%;
-  left: 30%;
-  height: 50%;
+  top: 30%;
+  left: 20%;
+  height: 30%;
   width: 40%;
 }
 
 .winner-form-container {
+  border: 2px solid #000000;
+  position:fixed;
   align-items:center;
   background-color: #b3b4aae7;
   border-radius: 5%;
   display: grid;
-  font-size: 20px;
-  grid-template-rows: 1fr 1fr;
-  height: 62%;
-  line-height: 25px;
-  padding: 10%;
+  grid-template-rows: 1fr 1fr; 
+  padding:10%;
   text-align: center;
-  width: 80%;
+  top: 30%;
+  left: 20%;
+  height: 30%;
+  width: 40%;
 }
 .btn {
   background-color:  rgba(100, 148, 237, 0.747);
@@ -236,4 +178,46 @@ header {
   font-size: 20px;
   font-weight: bold;
   height:95%;
+}
+/*=================bigger screens==============*/
+@media (min-width: 400px) {
+  body {  
+    grid-template-columns: 1fr 0.2fr 0.2fr 1fr;
+    grid-template-areas: "labove cabove cabove rabove" 
+                          "l c c r" 
+                          "lbelow cbelow cbelow rbelow"
+                          "lbottom lcbottom rcbottom rbottom";
+  }  
+  header {
+    grid-area: cabove;
+  }
+
+  #start-container {
+    grid-area: c;
+  }
+
+  #gameboard {
+    grid-area: cbelow;
+  }
+
+  #player-one-panel {
+    grid-area: lcbottom;
+  }
+
+  #player-two-panel {
+    grid-area: rcbottom;
+  }
+  .winner-popup {
+    top: 30%;
+    left: 20%;
+    height: 30%;
+    width: 40%;
+  }
+  
+  .winner-form-container {
+    top: 20%;
+    left: 30%;
+    height: 20%;
+    width: 20%;
+  }
 }
