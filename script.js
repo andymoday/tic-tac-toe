@@ -31,53 +31,107 @@ let displayControllerModule = (function() {
     let playerOne = Player('Player One', 'X')
     let playerTwo = Player('Player Two', 'O')
     let player = playerOne;
+    let mode;
     setMode: function setMode(button) {
         mode = button;
-    } 
-    playGame: function playGame() {
-        for (let i = 0; i < 9; i++) {
-            gameBoardModule.setGameArray(i,'');
-        }
-        render();
-        playerOne.name = prompt('Please enter player one name');
+        //let nameSelectForm = document.getElementById("myNameForm")
+        //nameSelectForm.style.display = 'block'
+        let P1 = prompt('Please enter player one name');
+        playerOne.name = P1
+        document.getElementById('player-one-name').textContent = P1
         if (mode === '1P') {
+            document.getElementById('player-two-name').textContent = 'Computer'
             playerTwo.name = 'Computer'
         } else {
-            playerTwo.name = prompt('Please enter player two name'); 
+            let P2 = prompt('Please enter player two name');
+            playerTwo.name = P2
+            document.getElementById('player-two-name').textContent = P2
         }
-        buttons.forEach((button) => {
-            button.addEventListener('click', () => {
-                playMove(button.id)    
-            })       
-        }) 
-    }
-    playMove: function playMove(buttonID) {   
-        if (mode === '1P') {
-            player = playerOne;
-          }  //comment out for multiplayer
-        let gameArray = gameBoardModule.getGameArray()         
-        if (gameArray[buttonID -1] === '') {
-            gameBoardModule.setGameArray([buttonID -1],player.getMark());
-            render();        
-            gameArray = gameBoardModule.getGameArray() 
-            console.log(gameArray[0],gameArray[1],gameArray[2],
-                gameArray[3], gameArray[4],gameArray[5],gameArray[6],gameArray[7],gameArray[8],
-                getResult(gameArray))
-            if (getResult(gameArray) !== 'incomplete'){
-                endGame(getResult(gameArray));
-            } else {
-                if (mode === '1P') {
-                    computerPlay()
-                } else {
-                    player = switchPlayer();
-                }
-            }
-        }
+        playGame();
     } 
+    //setPlayer: function setPlayer() {
+    //    let P1 = document.getElementById('player-one').value;
+    //    let P2 = document.getElementById('player-one').value;
+    //    playerOne.name = P1
+    //    if (mode === '1P') {
+    //        playerTwo.name = 'Computer'
+    //    } else {
+    //        playerTwo.name = P2
+    //    }           
+    //    document.getElementById('player-one').value = ''
+    //    document.getElementById('player-two').value = ''  
+    //    document.getElementById('player-one-name').value = P1
+    //    document.getElementById('player-two-name').value = P2
+    //    console.log(document.getElementById('player-one-name').value,
+    //                document.getElementById('player-two-name').value,
+    //                playerOne.name,
+    //                playerTwo.name )        
+    //    return false;//It's important to return false; to prevent default behaviour at the end of your submit handler, as otherwise the form will post and reload the page.
+    //}
+    playGame: function playGame() { 
+        buttons.forEach(button => {
+            button.removeEventListener('click', mouseEventHandler)
+          })  
+        buttons.forEach(button => {
+            button.addEventListener('click', mouseEventHandler)
+        })
+    }    
+    mouseEventHandler: function mouseEventHandler({target})  { // Step 2
+        if (target.className === 'square') { // Step 3
+            console.log(target.id)
+            if (mode === '1P') {
+                player = playerOne;
+            } else {
+                player = player
+            } //comment out for multiplayer
+            let gameArray = gameBoardModule.getGameArray()         
+            if (gameArray[target.id -1] === '') {
+                gameBoardModule.setGameArray([target.id -1],player.getMark());
+                //target.stopImmediatePropagation();
+                render();        
+                gameArray = gameBoardModule.getGameArray() 
+                console.log(gameArray[0],gameArray[1],gameArray[2],
+                    gameArray[3], gameArray[4],gameArray[5],gameArray[6],gameArray[7],gameArray[8],
+                    getResult(gameArray))
+                let result = getResult(gameArray)
+                if (result !== 'incomplete'){
+                    //stopImmediatePropagation();
+                    buttons.forEach(button => {
+                        button.removeEventListener('click', mouseEventHandler)
+                      })
+                    endGame(result);
+                    return;
+                } else {
+                    if (mode === '1P') {
+                        //target.stopImmediatePropagation()
+                        buttons.forEach(button => {
+                            button.removeEventListener('click', mouseEventHandler)
+                          })
+                        computerPlay()
+                    } else {
+                        player = switchPlayer();
+                        //target.stopImmediatePropagation()
+                        buttons.forEach(button => {
+                            button.removeEventListener('click', mouseEventHandler)
+                          })
+                        playGame()
+
+                    }
+                }
+            } else {
+                //target.stopImmediatePropagation()
+                buttons.forEach(button => {
+                    button.removeEventListener('click', mouseEventHandler)
+                  })
+                playGame()}
+        }
+    }    
     endGame: function endGame(result) {
+        let winnerForm = document.getElementById("myWinnerForm");
+        let winnerMSG = document.getElementById("winner-message");
+        winnerForm.style.display = "block";
         if (result === 'tie') {
-            alert('Tie!!');
-            reset();
+            winnerMSG.textContent =  'Tie!'
         } else {
             let winner;
             if (result === 'X win') {
@@ -85,21 +139,21 @@ let displayControllerModule = (function() {
             } else {
                 winner = playerTwo.getName();
             }
-            alert(winner + ' is the winner!');
-            reset();
+            winnerMSG.textContent =  winner + ' is the winner!'
+            
         }
+        return
     }
     switchPlayer: function switchPlayer() {
         return (player === playerOne) ? playerTwo : playerOne;
 
     }
-    reset: function reset(level) {    
+    reset: function reset() {   
         for (let i = 0; i < 9; i++) {
             gameBoardModule.setGameArray(i,'');
         }
-        render();
         player = playerOne;
-        playMove();
+        render();
     } 
     render: function render() {
         gameBoardModule.getGameArray().forEach(function (element,i) {
@@ -121,9 +175,17 @@ let displayControllerModule = (function() {
         render();        
         gameArray = gameBoardModule.getGameArray() 
         if (getResult(gameArray) !== 'incomplete'){
+            buttons.forEach(button => {
+                button.removeEventListener('click', mouseEventHandler)
+              })
             endGame(getResult(gameArray));
+            return
         }
-        player = switchPlayer();               
+        player = switchPlayer();
+        buttons.forEach(button => {
+            button.removeEventListener('click', mouseEventHandler)
+          })  
+        playGame();               
         
     }
     computeChoice: function computeChoice(array){
@@ -217,29 +279,22 @@ let displayControllerModule = (function() {
             return 'incomplete';
         }
     }
+    closeWinnerForm: function closeWinnerForm() {
+        document.getElementById("myWinnerForm").style.display = "none";
+        playGame();
+        reset();
+        } 
+    //closePlayerForm: function closePlayerForm() {
+    //    document.getElementById("myNameForm").style.display = "none";
+    //    } 
 
 
-
-    return {playGame,
-            reset,
-            setMode
+    return {setMode,
+            closeWinnerForm
             }
 })();
 
-let mode;
-let modeButtons = document.querySelectorAll('button.mode');
-modeButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-    displayControllerModule.setMode(button.id)
-    displayControllerModule.playGame();
-    })
-});
 
-//=================FORM OPEN AND CLOSE=============================
 
-function openForm() {
-    document.getElementById("myModeForm").style.display = "block";
-    }
-function closeForm() {
-    document.getElementById("myModeForm").style.display = "none";
-    } 
+
+
