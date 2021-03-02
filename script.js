@@ -33,6 +33,7 @@ let displayControllerModule = (function() {
     let player = playerOne;
     let mode;
     setMode: function setMode(button) {
+        reset();
         mode = button;
         //let nameSelectForm = document.getElementById("myNameForm")
         //nameSelectForm.style.display = 'block'

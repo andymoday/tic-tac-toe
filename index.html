@@ -12,8 +12,8 @@
         </header>
         <container id="start-container">
             <p>CHOOSE MODE</p>
-            <button type="button" id="1P" class="mode" onclick="displayControllerModule.setMode('1P')">1P</button>
-            <button type="button" id="2P" class="mode" onclick="displayControllerModule.setMode('2P')">2P</button>
+            <button type="button" id="1P" class="mode-btn" onclick="displayControllerModule.setMode('1P')">1P</button>
+            <button type="button" id="2P" class="mode-btn" onclick="displayControllerModule.setMode('2P')">2P</button>
         </container>
         <container id="gameboard"> 
             <button class='square' id='1'></button>
@@ -29,8 +29,8 @@
         
         <div class='winner-popup' id='myWinnerForm'>
             <form id="winnerForm" class='winner-form-container'>
-                <button type="button" id="winner-message" class="btn cancel" onclick="displayControllerModule.closeWinnerForm()"></button> 
-                <button type="button" id="winner-close" class="btn cancel" onclick="displayControllerModule.closeWinnerForm()">OK</button>
+                <button type="button" id="winner-message" class="btn" onclick="displayControllerModule.closeWinnerForm()"></button> 
+                <button type="button" id="winner-close" class="btn" onclick="displayControllerModule.closeWinnerForm()">OK</button>
             </form>  
           </div>
         <!--<div class='name-popup' id='myNameForm'>

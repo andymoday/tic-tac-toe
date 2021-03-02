@@ -47,90 +47,152 @@ table {
 	border-spacing: 0;
 }
 /*===================================END OF RESET=============================================*/
-header {
-  margin: 0 auto;
-  text-align: center;
-  font-size: 50px;
-  grid-area: cabove;
-}
 
 body {
+  align-items: center;
+  display: grid;
+  font-family: 'Open Sans Condensed', sans-serif;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 0.6fr 0.1fr 1.8fr 0.3fr;;
+  grid-template-areas: "hd hd" 
+                        "mode mode" 
+                        "below below"
+                        "lbottom rbottom";
+  justify-items: center; 
+}
+
+@media (min-width: 400px) {
+  body {
+    align-items: center;
     display: grid;
+    font-family: 'Open Sans Condensed', sans-serif;
     grid-template-columns: 1fr 0.2fr 0.2fr 1fr;
     grid-template-rows: 0.6fr 0.1fr 1.8fr 0.3fr;;
     grid-template-areas: "labove cabove cabove rabove" 
-                         "l c c r" 
-                         "lbelow cbelow cbelow rbelow"
-                         "lbottom lcbottom rcbottom rbottom";
-    justify-items: center;
-    align-items: center;
-    font-family: 'Open Sans Condensed', sans-serif;
-}
-.mode {
-  margin: 10px 0 0 0;
-    height: 30px;
-    width: 90px;
-    color: rgba(0, 0, 0, 0.781);
-    background-color: rgba(100, 148, 237, 0.747);
-    font-size: 20px;
-    border-radius: 5px;
-    border:solid 1px black;
+                          "l c c r" 
+                          "lbelow cbelow cbelow rbelow"
+                          "lbottom lcbottom rcbottom rbottom";
+    justify-items: center; 
+  }  
 }
 
-#start-container {
-    display:block;
-    grid-area: c;
-}
-#start-container p {
+header {
+  font-size: 50px;
+  grid-area: hd;
   margin: 0 auto;
   text-align: center;
-  font-size: 15px;
+}
+@media (min-width: 400px) {
+  header {
+    font-size: 50px;
+    grid-area: cabove;
+    margin: 0 auto;
+    text-align: center;
+  }
+}
+/*==========start-container=================*/
+#start-container {
+    display:block;
+    grid-area: mode;
+}
+@media (min-width: 400px) {
+  #start-container {
+    display:block;
+    grid-area: c;
+  }
 }
 
+#start-container p {
+  font-size: 15px;
+  margin: 10px auto;
+  text-align: center;
+}
+
+.mode-btn {
+  border-radius: 5px;
+  border:solid 1px black;
+  background-color: rgba(100, 148, 237, 0.747);
+  color: rgba(0, 0, 0, 0.781); 
+  font-size: 20px;
+  height: 30px;
+  width: 60px;
+}
+/*==========gameboard=================*/
 #gameboard {
+  background:khaki;
+  display: grid;
+  grid-area: below;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  height: 250px;
+  justify-content: center;
+  margin-top: 20px;
+  width: 250px;
+}
+@media (min-width: 400px) {
+  #gameboard {
+    background:khaki;
     display: grid;
-    width: 250px;
-    height: 250px;
+    grid-area: cbelow;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
+    height: 250px;
     justify-content: center;
-    grid-area: cbelow;
-    background:khaki;
     margin-top: 20px;
+    width: 250px;
+  }
 }
 
 .square {
-    width: 100%;
-    height: 100%;
-    border:solid 1px black;
-    font-size: 50px;
-    text-align: center;
-    color: rgba(0, 0, 0, 0.781);
-    background-color: rgba(100, 148, 237, 0.747);
-    border-radius: 5px;
+  background-color: rgba(100, 148, 237, 0.747);
+  border-radius: 5px;
+  border:solid 1px black;
+  color: rgba(0, 0, 0, 0.781);
+  font-size: 50px;
+  height: 100%;
+  text-align: center;
+  width: 100%;  
 }
-
-.icon {
-    width: 60px;
-    height: 60px;
-    border:solid 1px black;
-    font-size: 55px;
-    text-align: center;
-    color: rgba(0, 0, 0, 0.781);
-    background-color: rgba(100, 148, 237, 0.747);
-    border-radius: 5px;
-    line-height: 55px;
-    margin: 20px auto;
-}
+/*==========player panels=================*/
 #player-one-panel {
   display:grid;
-  grid-area: lcbottom;
+  grid-area: lbottom;
   justify-content: right;
 }
+
 #player-two-panel {
   display:grid; 
-  grid-area: rcbottom;
+  grid-area: rbottom;
   justify-content: left;
+}
+
+@media (min-width: 400px) {
+  #player-one-panel {
+    display:grid;
+    grid-area: lcbottom;
+    justify-content: right;
+  }
+}
+
+@media (min-width: 400px) {
+  #player-two-panel {
+    display:grid; 
+    grid-area: rcbottom;
+    justify-content: left;
+  }
+}
+
+.icon {  
+  background-color: rgba(100, 148, 237, 0.747);
+  border:solid 1px black;
+  border-radius: 5px;
+  color: rgba(0, 0, 0, 0.781);
+  font-size: 55px;
+  height: 60px;
+  line-height: 55px;
+  margin: 20px auto;
+  text-align: center;
+  width: 60px;
 }
 
 .player-name {
@@ -138,47 +200,40 @@ body {
   font-size: 25px;
   text-align: center;
 }
+/*==========winner-popup=================*/
+.winner-popup {
+  border: 2px solid #000000;
+  border-radius: 5%;
+  display: none; /*keeps it hidden until add button is clicked*/
+  margin:auto auto;
+  position: fixed;
+  top: 25%;
+  left: 30%;
+  height: 50%;
+  width: 40%;
+}
 
-
-
-
-  
-  .btn {
-    background-color:  rgba(100, 148, 237, 0.747);
-    border: solid black 1px;
-    border-radius: 5px;
-    color: black;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 20px;
-    font-weight: bold;
-    height:95%;
-  }
-
-
-
-
-  .winner-popup {
-    border: 2px solid #000000;
-    border-radius: 5%;
-    display: none; /*keeps it hidden until add button is clicked*/
-    margin:auto auto;
-    position: fixed;
-    top: 100px;
-    width: 60%;
-  }
-  
-  .winner-form-container {
-    align-items:center;
-    background-color: #b3b4aae7;
-    border-radius: 5%;
-    display: grid;
-    font-size: 20px;
-    grid-template-rows: 1fr 1fr;
-    line-height: 25px;
-    padding: 10%;
-    text-align: center;
-    height: 200px;
-    width: 80%;
-  }
-
+.winner-form-container {
+  align-items:center;
+  background-color: #b3b4aae7;
+  border-radius: 5%;
+  display: grid;
+  font-size: 20px;
+  grid-template-rows: 1fr 1fr;
+  height: 62%;
+  line-height: 25px;
+  padding: 10%;
+  text-align: center;
+  width: 80%;
+}
+.btn {
+  background-color:  rgba(100, 148, 237, 0.747);
+  border: solid black 1px;
+  border-radius: 5px;
+  color: black;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: bold;
+  height:95%;
+}
